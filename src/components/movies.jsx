@@ -17,8 +17,8 @@ class Movies extends Component {
    }
 
   componentDidMount(){
-    // console.log('didMount');
-    // console.log('----------')
+    console.log('didMount');
+    console.log('----------')
     const genres = [{_id:'', name: 'All Genres'}, ...getGenres()];
     this.setState({ movies: getMovies(), genres});
   }
@@ -69,7 +69,7 @@ class Movies extends Component {
   }
 
   render() { 
-    // console.log('movie rendered')
+    console.log('movie page rendered')
     const { currentPage, pageSize, sortColumn } = this.state
     const { length: count } = this.state.movies;
 
