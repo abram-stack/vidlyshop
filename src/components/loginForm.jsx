@@ -45,11 +45,26 @@ class Login extends Component {
     console.log('submitted');
   }
 
+  validateProperty = ({ name, value}) => {
+    if (name === 'username') {
+      if (value.trim() === '') return 'Username is required';
+    }
+    if (name === 'password') {
+      if (value.trim() === '') return 'Password is required';
+    }
+  }
+
+
   // replace e with dstructuring, e.currentTarget
-  handleChange = ({ currentTarget: input}) => {
+  handleChange = ({ currentTarget: input }) => {
+    const errors = { ...this.state.errors };
+    const errorMessage = this.validateProperty(input);
+    if (errorMessage) errors[input.name] = errorMessage;
+    else delete errors[input.name]; //because we want to clear the state
+
     const account = { ...this.state.account };
     account[input.name] = input.value; //assign account dynamically using [], independently instead of using . 
-    this.setState({ account });
+    this.setState({ account, errors });
   }
 
 
