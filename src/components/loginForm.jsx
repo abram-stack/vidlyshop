@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import Joi from 'joi-browser'
 import Input from './common/input';
+import { result } from 'lodash';
 
-class Login extends Component {
+class LoginForm extends Component {
   // username = React.createRef()
 
   state = {
@@ -14,18 +16,22 @@ class Login extends Component {
     }
   }
 
-  validate = () => {
-    const errors = {};
+  schema = {
+    username: Joi.string().required().label('Username'),
+    password: Joi.string().required().label('Password')
+  };
 
-    const { account } = this.state;
-    // check in the state
-    if (account.username.trim() === '')
-      errors.username = 'Username is required'
-    if (account.password.trim() === '')
-      errors.password = 'Password is required'
+  validate = () => {
+    const options = {abortEarly: false}
+    const { error } = Joi.validate(this.state.account, this.schema, options);
+    if (!error) return null;
+
+    const errors = {};
+    for (let item of error.details)
+      // we iterate, each item we assign to errors object ie: errors.username = message
+      errors[item.path[0]] = item.message;
     
-    // return null(becarful, error cant be null tho, 2 way to fix : in setState of error) if theres no error(check length of every keys of the object), or that errors object
-    return Object.keys(errors).length === 0 ? {} : errors;
+    return errors;
   }
 
   handleSubmit = (e) => {
@@ -72,7 +78,7 @@ class Login extends Component {
     const { account, errors } = this.state;
     return ( 
       <div>
-        <h1>This Login Form</h1>
+        <h1>Login</h1>
         <form onSubmit={ this.handleSubmit }>
           <Input
             name='username'
@@ -96,4 +102,4 @@ class Login extends Component {
   }
 }
  
-export default Login;
+export default LoginForm;
