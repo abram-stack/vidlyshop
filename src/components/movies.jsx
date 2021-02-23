@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { paginate } from '../utils/paginate';
 import Pagination from './common/pagination'
 import ListGroup from './common/listGroup';
@@ -68,15 +69,16 @@ class Movies extends Component {
     return { totalCount: filtered.length, data: movies}
   }
 
-  render() { 
+  render() {
     console.log('movie page rendered')
     const { currentPage, pageSize, sortColumn } = this.state
     const { length: count } = this.state.movies;
 
-    if(count === 0)
+    if (count === 0)
       return <p>There are no movies in the database.</p>
 
-    const {totalCount, data: movies} = this.getPagedData();
+    const { totalCount, data: movies } = this.getPagedData();
+    
 
     return (
       <div className='row'>
@@ -88,6 +90,13 @@ class Movies extends Component {
             />
         </div>
         <div className="col">
+          <Link
+            to='/movies/new'
+            className='btn btn-primary'
+            style={{marginBottom: 20}}
+          >
+            New Movie
+          </Link>
           <p>Showing {totalCount} movies in the database.</p>
           <MoviesTable
             movies={movies}
@@ -97,7 +106,7 @@ class Movies extends Component {
             onSort={this.handleSort}
           /> 
           <Pagination itemsCount={totalCount} pageSize={pageSize} onPageChange={this.handlePageChange} currentPage={currentPage}/>
-          </div>
+        </div>
       </div >
     )
   }

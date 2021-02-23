@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
 import Joi from 'joi-browser'
-import Input from './common/input';
-import { result } from 'lodash';
+import Form from './common/form'
 
-class LoginForm extends Component {
-  // username = React.createRef()
-
+class LoginForm extends Form {
   state = {
-    account: {
+    data: {
       username: '',
       password: ''
     },
-    errors: {
-      // username: 'username is required. ie. username, map account dynamically 
-    }
+    errors: { }
+      // username: 'username is required. ie. username, map data dynamically 
+    
   }
 
   schema = {
@@ -21,79 +18,19 @@ class LoginForm extends Component {
     password: Joi.string().required().label('Password')
   };
 
-  validate = () => {
-    const options = {abortEarly: false}
-    const { error } = Joi.validate(this.state.account, this.schema, options);
-    if (!error) return null;
 
-    const errors = {};
-    for (let item of error.details)
-      // we iterate, each item we assign to errors object ie: errors.username = message
-      errors[item.path[0]] = item.message;
-    
-    return errors;
+  doSubmit = () => {
+    console.log('fomr submitted');
   }
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-
-    
-    const errors = this.validate();
-    // we got error returned
-    this.setState({ errors});
-
-    if (errors) return;
-
-    // call the server
-    // in react, we dont use DOM element directly to get access to user element, we use REFERENCE
-    // rule of thumb : minimize reference.
-    // const username = this.username.current.value;
-    console.log('submitted');
-  }
-
-  validateProperty = ({ name, value }) => {
-    const obj = {[name]: value };
-    const schema = { [name]: this.schema[name] };
-    
-    const { error } = Joi.validate(obj, schema);
-    return (error) ? error.details[0].message : null;
-  }
-
-
-  // replace e with dstructuring, e.currentTarget
-  handleChange = ({ currentTarget: input }) => {
-    const errors = { ...this.state.errors };
-    const errorMessage = this.validateProperty(input);
-    if (errorMessage) errors[input.name] = errorMessage;
-    else delete errors[input.name]; //because we want to clear the state
-
-    const account = { ...this.state.account };
-    account[input.name] = input.value; //assign account dynamically using [], independently instead of using . 
-    this.setState({ account, errors });
-  }
-
 
   render() { 
-    const { account, errors } = this.state;
     return ( 
       <div>
         <h1>Login</h1>
         <form onSubmit={ this.handleSubmit }>
-          <Input
-            name='username'
-            value={account.username}
-            label='Username'
-            onChange={this.handleChange}
-            error={errors.username}
-          />
-          <Input
-            name='password'
-            value={account.password}
-            label='Password'
-            onChange={this.handleChange}
-            error={errors.password}
-          />
-        <button className='btn btn-primary'>Submit</button>
+          {this.renderInput('username', 'Username')}
+          {this.renderInput('password', 'Password', 'password')}
+          {this.renderButton('Login')}
         </form>
 
       </div>
