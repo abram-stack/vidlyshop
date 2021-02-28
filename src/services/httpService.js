@@ -2,7 +2,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify'
 import logger from './logService';
 
-// we dont have to repeat the error report,
+// we dont have to repeat the error report once it declared,
 axios.interceptors.response.use(null, error => {
   // will be executed evrytime unxepected error occured
   const expectedError = error.response && error.response.status >= 400 && error.response.status < 500
