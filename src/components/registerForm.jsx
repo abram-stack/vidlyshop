@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Joi  from 'joi-browser';
 import Form from './common/form';
+import * as userService from '../services/userService';
+import auth from '../services/authService';
 
 class RegisterForm extends Form {
   state = {  
@@ -18,8 +20,20 @@ class RegisterForm extends Form {
     name: Joi.string().required().label('Name')
   }
 
-  doSubmit = () => {
-    console.log('register');
+  doSubmit = async () => {
+    try {
+      const response = await userService.registerUser(this.state.data);
+      auth.loginWithJwt(response.headers['x-auth-token']);
+      window.location = '/';
+    } catch (ex) {
+      if (ex.response && ex.response.status === 400) {
+        const errors = { ...this.state.errors };
+        // we could also get error message from the server, we have to set it dynamically 
+        // BUG there
+        errors.password = ex.response.data;
+        this.setState({ errors });
+      }
+    }
   }
 
   render() { 
